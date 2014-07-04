@@ -1,0 +1,10 @@
+#DirectoryIndex index.php
+RewriteEngine on
+#if using a subdomain or alias please ensure this doesn't include the subdomain part and just the url e.g. example.co.uk not dev.example.co.uk
+RewriteCond %{HTTP_HOST} ^geogab.co.uk
+RewriteRule (.*) http://www.geogab.co.uk/$1 [R=301,L]
+RewriteCond $1 !^(index\.php|assets|images|css|js|robots\.txt|favicon\.ico)
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_URI} !.*\.(ico|gif|jpg|jpeg|png|js|css)
+RewriteRule ^(.*)$ ./index.php/$1 [L,QSA]
