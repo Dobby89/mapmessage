@@ -10,4 +10,12 @@
   <div id="google-map-map" class="map"></div>
 </div>
 
+<div>
+    <?php foreach($threads as $thread) { ?>
+
+        <?php echo $thread['title']; ?>
+
+    <?php } ?>
+</div>
+
 <?php $this->load->view('includes/footer'); ?>
