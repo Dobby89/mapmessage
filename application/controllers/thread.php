@@ -13,7 +13,10 @@ class Thread extends CI_Controller {
 
         if($id) {
 
+            $this->load->model('comment_model');
+
             $data['thread'] = $this->thread_model->get_a_thread($id);
+            $data['comments'] = $this->comment_model->get_comments_by_thread_id($id);
 
             $this->load->view('thread', $data);
         }
