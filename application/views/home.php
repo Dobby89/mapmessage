@@ -2,60 +2,108 @@
 
 <div id="notifications"></div>
 
+<form id="search-form" action="<?php echo site_url('map/search'); ?>">
+    <input id="search-radius" name="search-radius" value="1" />
+
+    <button id="search-submit" type="submit">Find Threads</button>
+</form>
+
 <div class="google-map">
-  <form id="google-map-form" action="<?php echo site_url('map/search'); ?>">
-    <input id="thread-search" name="thread-search" type="search" placeholder="Find threads" />
-  </form>
-
-  <div id="google-map-map" class="map"></div>
+    <div id="google-map-map" class="map"></div>
 </div>
 
-<div class="thread-list">
-    <?php foreach($threads as $thread) { ?>
-
-        <?php $this->load->view('partials/thread_list', array('thread' => $thread)); ?>
-
-    <?php } ?>
-</div>
+<div class="thread-list"></div>
 
 <script type="text/javascript">
-var ajaxGetThreads = function(lat, long) {
 
-    $.ajax({
-        url: '<?php echo base_url('thread/get_nearby_threads') ?>',
-        type: 'POST',
-        data: {
-            lat: lat,
-            long: long
-        },
-        beforeSend: function(){
-            //console.log('getting nearby posts/threads');
-        },
-        success: function(data){
-            if(data.errors){
-                $.each(data.errors, function(field_name, err_msg){
-                    if(field_name == 'error'){
-                        alert(err_msg);
-                        return false; // break from the loop
-                    }
-                });
-            }
+    var latitude;
+    var longitude;
 
-            var thread_list = $('.thread-list');
-            if(data.threads){
+    geolocate();
 
-                thread_list.empty().addClass('loading'); // clear the .thread-list so we can repopulate
+    $('#search-form').bind('submit', function(event){
 
-                $.each(data.threads, function(thread, fields){
-                    thread_list.append(fields.html);
-                });
+        console.log($('#search-radius').val());
 
-                thread_list.removeClass('loading');
-            }
-        },
-        dataType: 'json'
+        event.preventDefault();
+
+        ajaxGetThreads({
+            lat: latitude,
+            long: longitude,
+            radius: $('#search-radius').val()
+        });
     });
-}
+
+    function geolocate(){
+        if (navigator.geolocation) {
+            var timeoutVal = 10 * 1000 * 1000;
+            var options = [{
+                enableHighAccuracy: false,
+                timeout: timeoutVal,
+                maximumAge: 0
+            }];
+            navigator.geolocation.getCurrentPosition(currentPosition, geolocationError, options);
+        }
+        else {
+            alert("Geolocation is not supported by this browser");
+        }
+    }
+
+    function currentPosition(position) {
+
+        latitude = position.coords.latitude;
+        longitude = position.coords.longitude;
+
+        console.log(latitude);
+        console.log(longitude);
+    }
+
+    function geolocationError(error) {
+
+        console.warn('ERROR(' + error.code + '): ' + error.message);
+    }
+
+    function ajaxGetThreads(params) {
+
+        $.ajax({
+            url: '<?php echo site_url('thread/get_nearby_threads') ?>',
+            type: 'POST',
+            data: {
+                lat: params['lat'],
+                long: params['long'],
+                radius: params['radius']
+            },
+            beforeSend: function(){
+                //console.log('getting nearby posts/threads');
+            },
+            success: function(data){
+                if(data.errors){
+                    $.each(data.errors, function(field_name, err_msg){
+                        if(field_name == 'error'){
+                            alert(err_msg);
+                            return false; // break from the loop
+                        }
+                    });
+                }
+
+                var thread_list = $('.thread-list');
+                if(data.threads){
+
+                    // clear the list so we can repopulate and add a loading class
+                    thread_list.empty().addClass('loading');
+
+                    // loop through results and add to the list
+                    $.each(data.threads, function(thread, fields){
+                        thread_list.append(fields.html);
+                    });
+
+                    // remove loading class
+                    thread_list.removeClass('loading');
+                }
+            },
+            dataType: 'json'
+        });
+    }
 </script>
 
 <?php $this->load->view('includes/footer'); ?>

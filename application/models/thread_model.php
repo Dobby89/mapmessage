@@ -10,17 +10,14 @@ class thread_Model extends CI_Model {
     {
         if ($orig_lat && $orig_long) {
 
-            $query = $this->db->query('SELECT
-            *
-            ,((ACOS(SIN('.$orig_lat.' * PI() / 180) * SIN(`latitude` * PI() / 180) + COS('.$orig_lat.' * PI() / 180) * COS(`latitude` * PI() / 180) * COS(('.$orig_long.' - `longitude`) * PI() / 180)) * 180 / PI()) * 60 * 1.1515) AS `distance`
+            $query = $this->db->query('SELECT *,
+            ACOS( SIN( RADIANS( `latitude` ) ) * SIN( RADIANS( '.$orig_lat.' ) ) + COS( RADIANS( `latitude` ) )
+            * COS( RADIANS( '.$orig_lat.' )) * COS( RADIANS( `longitude` ) - RADIANS( '.$orig_long.' )) ) * 6380 AS `distance`
             FROM `thread`
             WHERE
-            (
-                `latitude` BETWEEN ('.$orig_lat.' - '.$bounding_distance.') AND ('.$orig_lat.' + '.$bounding_distance.')
-                AND `longitude` BETWEEN ('.$orig_long.' - '.$bounding_distance.') AND ('.$orig_long.' + '.$bounding_distance.')
-            )
-            ORDER BY `distance` ASC
-            limit 25');
+            ACOS( SIN( RADIANS( `latitude` ) ) * SIN( RADIANS( '.$orig_lat.' ) ) + COS( RADIANS( `latitude` ) )
+            * COS( RADIANS( '.$orig_lat.' )) * COS( RADIANS( `longitude` ) - RADIANS( '.$orig_long.' )) ) * 6380 < '.$bounding_distance.'
+            ORDER BY `distance`');
 
         } else {
 

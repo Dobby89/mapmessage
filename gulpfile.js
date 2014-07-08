@@ -43,7 +43,7 @@ gulp.task('scripts', function() {
   return gulp.src('./src/js/*.js')
     .pipe(order([
       'jquery-1.11.1.js', // Decide which order to concatenate the js files
-      'geolocation.js'
+      'custom.js'
     ]))
     .pipe(concat('all.js'))
     //.pipe(rename('all.js'))

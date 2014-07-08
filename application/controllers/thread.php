@@ -24,7 +24,11 @@ class Thread extends CI_Controller {
                     $orig_long = $this->input->post('long');
                 }
 
-                foreach($this->thread_model->get_threads($orig_lat, $orig_long) as $thread){
+                if($this->input->post('radius')){
+                    $radius = $this->input->post('radius');
+                }
+
+                foreach($this->thread_model->get_threads($orig_lat, $orig_long, $radius) as $thread){
 
                     $thread['title'] = htmlentities($thread['title']);
 
