@@ -6,7 +6,7 @@ class thread_Model extends CI_Model {
         parent::__construct();
     }
 
-    function get_thread($id) {
+    function get_a_thread($id) {
 
         $query = $this->db->get_where('thread', array('id' => $id));
 

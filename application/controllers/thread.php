@@ -9,11 +9,11 @@ class Thread extends CI_Controller {
         $this->load->model('thread_model');
     }
 
-    public function get_thread($id) {
+    public function get_a_thread($id) {
 
         if($id) {
 
-            $data['thread'] = $this->thread_model->get_thread($id);
+            $data['thread'] = $this->thread_model->get_a_thread($id);
 
             $this->load->view('thread', $data);
         }
