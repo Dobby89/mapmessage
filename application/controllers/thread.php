@@ -9,6 +9,16 @@ class Thread extends CI_Controller {
         $this->load->model('thread_model');
     }
 
+    public function get_thread($id) {
+
+        if($id) {
+
+            $data['thread'] = $this->thread_model->get_thread($id);
+
+            $this->load->view('thread', $data);
+        }
+    }
+
     public function get_nearby_threads()
     {
         $json = array('errors' => false);
@@ -31,6 +41,7 @@ class Thread extends CI_Controller {
                 foreach($this->thread_model->get_threads($orig_lat, $orig_long, $radius) as $thread){
 
                     $thread['title'] = htmlentities($thread['title']);
+                    $thread['href'] = site_url('threads/'.$thread['id']);
 
                     $thread['html'] = $this->load->view('partials/thread_list', array('thread' => $thread), true);
 

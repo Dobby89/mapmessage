@@ -6,6 +6,13 @@ class thread_Model extends CI_Model {
         parent::__construct();
     }
 
+    function get_thread($id) {
+
+        $query = $this->db->get_where('thread', array('id' => $id));
+
+        return $query->row_array();
+    }
+
     function get_threads($orig_lat = null, $orig_long = null, $bounding_distance = 25, $options = array())
     {
         if ($orig_lat && $orig_long) {

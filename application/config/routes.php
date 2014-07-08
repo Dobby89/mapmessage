@@ -38,6 +38,8 @@
 |
 */
 
+$route['threads/(:any)'] = "thread/get_thread/$1";
+
 $route['default_controller'] = "home";
 $route['404_override'] = '';
 
