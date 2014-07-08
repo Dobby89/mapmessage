@@ -3,14 +3,18 @@
 <div id="notifications"></div>
 
 <form id="search-form" action="<?php echo site_url('map/search'); ?>">
-    <input id="search-radius" name="search-radius" value="1" />
+    <select id="search-radius" name="search-radius">
+        <option value="5" selected>5</option>
+        <option value="10">10</option>
+        <option value="20">20</option>
+        <option value="40">40</option>
+        <option value="80">80</option>
+    </select>
 
     <button id="search-submit" type="submit">Find Threads</button>
 </form>
 
-<div class="google-map">
-    <div id="google-map-map" class="map"></div>
-</div>
+<?php $this->load->view('partials/create_thread'); ?>
 
 <div class="thread-list"></div>
 

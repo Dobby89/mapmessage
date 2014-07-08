@@ -34,4 +34,27 @@ class thread_Model extends CI_Model {
 
         return $query->result_array();
     }
+
+    public function create_thread($data){
+
+        // remove items from post array
+        unset($data['email_address']);
+        unset($data['url']);
+        unset($data['submit']);
+
+        // remove form field prefix from all form fields
+        $clean_data = array();
+        foreach($data as $key => $value){
+            $clean_data[str_replace('thread_', '', $key)] = $value;
+        }
+
+        $this->load->helper('date');
+        $clean_data['date'] = date('Y-m-d H:i:s', now());
+
+        if ($this->db->insert('thread', $clean_data)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

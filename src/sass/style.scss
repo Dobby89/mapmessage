@@ -50,3 +50,7 @@
     content: 'Loading...';
   }
 }
+
+.sweet {
+  @include accessibility();
+}

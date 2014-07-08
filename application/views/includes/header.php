@@ -13,3 +13,10 @@
   <script type="text/javascript" src="<?php echo base_url('dist/js/all.js'); ?>"></script>
 </head>
 <body>
+
+<?php if ($this->session->flashdata('success')){ ?>
+    <?php $this->load->view('includes/notification', array('class' => 'success', 'message' => $this->session->flashdata('success'))); ?>
+<?php } ?>
+<?php if ($this->session->flashdata('error')){ ?>
+<?php $this->load->view('includes/notification', array('class' => 'error', 'message' => $this->session->flashdata('error'))); ?>
+<?php } ?>

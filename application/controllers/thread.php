@@ -67,6 +67,36 @@ class Thread extends CI_Controller {
 
         $this->output->set_content_type('application/json')->set_output(json_encode($json));
     }
+
+    public function create_thread() {
+
+        // include form helper and library
+        $this->load->helper('form');
+        $this->load->library('form_validation');
+
+        // set up form validation rules
+        $this->form_validation->set_rules('url', 'URL', 'trim');
+        $this->form_validation->set_rules('thread_title', 'Title', 'trim|required|max_length[225]');
+        $this->form_validation->set_rules('thread_content', 'Description', 'trim');
+        $this->form_validation->set_error_delimiters('<li>', '</li>');
+
+        if ($this->input->post() && $this->form_validation->run()) {
+
+            if($this->input->post('email_address') == '') { // honeypot field check, if this is filled in, it shouldn't be processed (spam)
+
+                if($this->thread_model->create_thread($this->input->post())) { // check if thread has been successfully added to the database
+
+                    $this->session->set_flashdata('success', 'Success! Your thread has been posted.');
+                } else {
+                    $this->session->set_flashdata('error', 'Sorry, there was an error. Please try again.');
+                }
+            }
+        } else {
+            $this->session->set_flashdata('error', 'You done goofed.');
+        }
+
+        redirect($this->input->post('url'));
+    }
 }
 
 /* End of file thread.php */
