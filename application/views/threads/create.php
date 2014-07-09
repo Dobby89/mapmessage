@@ -15,7 +15,7 @@
         </li>
         <li>
             <?php echo form_label('Description', 'thread_content', array('class' => 'visuallyhidden')); ?>
-            <?php echo form_input(array('name' => 'thread_content', 'placeholder' => 'Description', 'value' => set_value('thread_content'))); ?>
+            <?php echo form_textarea(array('name' => 'thread_content', 'placeholder' => 'Description', 'value' => set_value('thread_content'))); ?>
             <?php echo form_error('thread_content', '<span class="form-error">', '</span>'); ?>
         </li>
         <button class="btn btn--small" type="submit">Create Thread</button>
