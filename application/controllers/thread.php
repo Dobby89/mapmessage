@@ -53,7 +53,7 @@ class Thread extends CI_Controller {
                 }
 
             } else {
-                $json['errors']['error'] = 'No data found';
+                $json['errors']['error'] = 'No POST data was provided';
             }
 
             $this->output->set_content_type('application/json')->set_output(json_encode($json));
