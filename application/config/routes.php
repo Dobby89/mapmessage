@@ -38,6 +38,8 @@
 |
 */
 
+$route['account/create'] = "account/create_account";
+
 $route['threads/create'] = "thread/create_thread";
 $route['threads/(:any)'] = "thread/get_a_thread/$1";
 

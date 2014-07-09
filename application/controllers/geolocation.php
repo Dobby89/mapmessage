@@ -25,6 +25,15 @@ class Geolocation extends CI_Controller {
 
         $this->output->set_content_type('application/json')->set_output(json_encode($json));
     }
+
+    public function get_location()
+    {
+        $location = array();
+        $location['latitude'] = $this->session->userdata('user_latitude');
+        $location['longitude'] = $this->session->userdata('user_longitude');
+
+        return $location;
+    }
 }
 
 /* End of file geolocation.php */

@@ -14,6 +14,16 @@
 </head>
 <body>
 
+<ul class="nav nav--block">
+    <li><a href="<?php echo site_url(); ?>">Home</a></li>
+    <?php if($this->session->userdata('logged_in')) { ?>
+        <li><a href="<?php echo site_url('account/logout'); ?>">Logout</a></li>
+    <?php } else { ?>
+        <li><a href="<?php echo site_url('account/create'); ?>">Create Account</a></li>
+        <li><a href="<?php echo site_url('account/login'); ?>">Login</a></li>
+    <?php } ?>
+</ul>
+
 <?php if ($this->session->flashdata('success')){ ?>
     <?php $this->load->view('includes/notification', array('class' => 'success', 'message' => $this->session->flashdata('success'))); ?>
 <?php } ?>
