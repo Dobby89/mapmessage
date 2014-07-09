@@ -84,18 +84,22 @@ class Thread extends CI_Controller {
 
             if($this->input->post('email_address') == '') { // honeypot field check, if this is filled in, it shouldn't be processed (spam)
 
-                if($this->thread_model->create_thread($this->input->post())) { // check if thread has been successfully added to the database
+                $thread_data = $this->input->post();
+                $thread_data['latitude'] = $this->session->userdata('user_latitude');
+                $thread_data['longitude'] = $this->session->userdata('user_longitude');
+
+                if($this->thread_model->create_thread($thread_data)) { // check if thread has been successfully added to the database
 
                     $this->session->set_flashdata('success', 'Success! Your thread has been posted.');
                 } else {
-                    $this->session->set_flashdata('error', 'Sorry, there was an error. Please try again.');
+                    $this->session->set_flashdata('error', 'Thread could not be added. Try again.');
                 }
+
+                redirect($this->input->post('url'));
             }
-        } else {
-            $this->session->set_flashdata('error', 'You done goofed.');
         }
 
-        redirect($this->input->post('url'));
+        $this->load->view('threads/create');
     }
 }
 

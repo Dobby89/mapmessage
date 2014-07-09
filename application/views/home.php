@@ -11,10 +11,12 @@
         <option value="80">80</option>
     </select>
 
-    <button id="search-submit" type="submit">Find Threads</button>
+    <button id="search-submit" class="btn btn--small" type="submit">Find Threads</button>
 </form>
 
-<?php $this->load->view('partials/create_thread'); ?>
+<div>
+    <a class="btn btn--small" href="<?php echo site_url('threads/create'); ?>">Create Thread</a>
+</div>
 
 <div class="thread-list"></div>
 
@@ -26,8 +28,6 @@
     geolocate();
 
     $('#search-form').bind('submit', function(event){
-
-        console.log($('#search-radius').val());
 
         event.preventDefault();
 
@@ -60,6 +60,30 @@
 
         console.log(latitude);
         console.log(longitude);
+
+        // save location details into session
+        $.ajax({
+            url: '<?php echo site_url('geolocation/save_location') ?>',
+            type: 'POST',
+            data: {
+                lat: latitude,
+                long: longitude
+            },
+            beforeSend: function(){
+                //console.log('saving user location');
+            },
+            success: function(data){
+                if(data.errors){
+                    $.each(data.errors, function(field_name, err_msg){
+                        if(field_name == 'error'){
+                            alert(err_msg);
+                            return false; // break from the loop
+                        }
+                    });
+                }
+            },
+            dataType: 'json'
+        });
     }
 
     function geolocationError(error) {
