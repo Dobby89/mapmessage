@@ -94,7 +94,7 @@
     function ajaxGetThreads(params) {
 
         $.ajax({
-            url: '<?php echo site_url('thread/get_nearby_threads') ?>',
+            url: '<?php echo site_url('thread/ajax_get_threads') ?>',
             type: 'POST',
             data: {
                 lat: params['lat'],

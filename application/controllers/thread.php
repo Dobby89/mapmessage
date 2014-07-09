@@ -18,16 +18,16 @@ class Thread extends CI_Controller {
             $data['thread'] = $this->thread_model->get_a_thread($id);
             $data['comments'] = $this->comment_model->get_comments_by_thread_id($id);
 
-            $this->load->view('thread', $data);
+            $this->load->view('threads/view', $data);
         }
     }
 
-    public function get_nearby_threads()
+    public function ajax_get_threads()
     {
-        $json = array('errors' => false);
-        $json['threads'] = array();
-
         if($this->input->is_ajax_request()){
+
+            $json = array('errors' => false);
+            $json['threads'] = array();
 
             // Handle POST events
             if($this->input->post()) {
@@ -36,10 +36,7 @@ class Thread extends CI_Controller {
                     $orig_lat = $this->input->post('lat');
                     $orig_long = $this->input->post('long');
                 }
-
-                if($this->input->post('radius')){
-                    $radius = $this->input->post('radius');
-                }
+                $radius = $this->input->post('radius') ? $this->input->post('radius') : 5;
 
                 foreach($this->thread_model->get_threads($orig_lat, $orig_long, $radius) as $thread){
 
@@ -58,14 +55,10 @@ class Thread extends CI_Controller {
             } else {
                 $json['errors']['error'] = 'No data found';
             }
-        } else {
 
-            // Request has not come from an ajax request so send elsewhere
-            redirect('home/index');
-            exit();
+            $this->output->set_content_type('application/json')->set_output(json_encode($json));
+
         }
-
-        $this->output->set_content_type('application/json')->set_output(json_encode($json));
     }
 
     public function create_thread() {
