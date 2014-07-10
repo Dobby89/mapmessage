@@ -9,7 +9,7 @@
 
   <link rel="stylesheet" href="<?php echo base_url('dist/css/style.css'); ?>" />
 
-  <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+  <script type="text/javascript" src="http://maps.google.com/maps/api/js?v=3.exp&libraries=places&sensor=true"></script>
   <script type="text/javascript" src="<?php echo base_url('dist/js/all.js'); ?>"></script>
 </head>
 <body>

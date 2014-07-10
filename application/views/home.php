@@ -1,6 +1,9 @@
 <?php $this->load->view('includes/header'); ?>
 
-<div id="notifications"></div>
+<form>
+    <input id="geocomplete" type="search" placeholder="Type in an address" size="90" />
+    <input id="find" type="button" value="find" />
+</form>
 
 <form id="search-form" action="<?php echo site_url('map/search'); ?>">
     <select id="search-radius" name="search-radius">
@@ -25,7 +28,15 @@
     var latitude;
     var longitude;
 
-    geolocate();
+    <?php if($this->session->userdata('user_latitude') && $this->session->userdata('user_longitude')) { ?>
+        ajaxGetThreads({
+            lat: <?php echo $this->session->userdata('user_latitude'); ?>,
+            long: <?php echo $this->session->userdata('user_longitude'); ?>,
+            radius: 5
+        });
+    <?php } else { ?>
+        geolocate();
+    <?php } ?>
 
     $('#search-form').bind('submit', function(event){
 
@@ -61,7 +72,18 @@
         console.log(latitude);
         console.log(longitude);
 
-        // save location details into session
+        ajaxSaveLocation(latitude, longitude);
+    }
+
+    function geolocationError(error) {
+
+        console.warn('ERROR(' + error.code + '): ' + error.message);
+    }
+
+    function ajaxSaveLocation(latitude, longitude){
+
+        console.log('saving location');
+
         $.ajax({
             url: '<?php echo site_url('geolocation/save_location') ?>',
             type: 'POST',
@@ -86,12 +108,10 @@
         });
     }
 
-    function geolocationError(error) {
-
-        console.warn('ERROR(' + error.code + '): ' + error.message);
-    }
-
     function ajaxGetThreads(params) {
+
+        console.log('ajax getting threads');
+        console.log(params);
 
         $.ajax({
             url: '<?php echo site_url('thread/ajax_get_threads') ?>',
@@ -132,6 +152,32 @@
             dataType: 'json'
         });
     }
+
+    $(function(){
+
+        // autocomplete the search results for addresses
+        $("#geocomplete").geocomplete()
+            .bind("geocode:result", function(event, result){
+                console.log('latitude:' + result.geometry.location.k);
+                console.log('longitude:' + result.geometry.location.B);
+
+                ajaxGetThreads({
+                    lat: result.geometry.location.k,
+                    long: result.geometry.location.B,
+                    radius: 5
+                })
+            })
+            .bind("geocode:error", function(event, status){
+                console.log("ERROR: " + status);
+            })
+            .bind("geocode:multiple", function(event, results){
+                console.log("Multiple: " + results.length + " results found");
+            });
+
+        $("#find").click(function(){
+            $("#geocomplete").trigger("geocode");
+        });
+    });
 </script>
 
 <?php $this->load->view('includes/footer'); ?>
