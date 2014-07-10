@@ -2,11 +2,11 @@
 
 <form>
     <input id="geocomplete" type="search" placeholder="Type in an address" size="90" />
-    <input id="find" type="button" value="find" />
+    <button id="find" class="btn btn--small" type="button">Find Threads</button>
 </form>
 
-<form id="search-form" action="<?php echo site_url('map/search'); ?>">
-    <select id="search-radius" name="search-radius">
+<form id="filter-form" action="<?php echo site_url('map/search'); ?>">
+    <select id="filter-radius" name="search-radius">
         <option value="5" selected>5</option>
         <option value="10">10</option>
         <option value="20">20</option>
@@ -14,7 +14,7 @@
         <option value="80">80</option>
     </select>
 
-    <button id="search-submit" class="btn btn--small" type="submit">Find Threads</button>
+    <button id="filter-submit" class="btn btn--small" type="submit">Filter</button>
 </form>
 
 <div>
@@ -25,8 +25,8 @@
 
 <script type="text/javascript">
 
-    var latitude;
-    var longitude;
+    var latitude = <?php echo $this->session->userdata('user_latitude') ? $this->session->userdata('user_latitude') : 'null'; ?>;
+    var longitude = <?php echo $this->session->userdata('user_longitude') ? $this->session->userdata('user_longitude') : 'null'; ?>;
 
     <?php if($this->session->userdata('user_latitude') && $this->session->userdata('user_longitude')) { ?>
         ajaxGetThreads({
@@ -38,14 +38,14 @@
         geolocate();
     <?php } ?>
 
-    $('#search-form').bind('submit', function(event){
+    $('#filter-form').bind('submit', function(event){
 
         event.preventDefault();
 
         ajaxGetThreads({
             lat: latitude,
             long: longitude,
-            radius: $('#search-radius').val()
+            radius: $('#filter-radius').val()
         });
     });
 
@@ -161,9 +161,12 @@
                 console.log('latitude:' + result.geometry.location.k);
                 console.log('longitude:' + result.geometry.location.B);
 
+                latitude = result.geometry.location.k;
+                longitude = result.geometry.location.B;
+
                 ajaxGetThreads({
-                    lat: result.geometry.location.k,
-                    long: result.geometry.location.B,
+                    lat: latitude,
+                    long: longitude,
                     radius: 5
                 })
             })
